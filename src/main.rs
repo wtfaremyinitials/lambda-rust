@@ -14,7 +14,7 @@ fn receive() {
     io::stdin().read_line(&mut data).expect("Failed to read event");
 
     let root = Json::from_str(&data).expect("Failed to parse JSON");
-    let root = root.as_object().expect("root was not of type Json::Object");
+    let root = root.as_object().expect("Root of event JSON was not of type Json::Object");
 
     let event = root.get("event")
                 .expect("No key `event` on message object")
