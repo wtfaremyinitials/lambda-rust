@@ -1,0 +1,7 @@
+[package]
+name = "rust-lambda"
+version = "0.1.0"
+authors = ["Will Franzen <wtfranzen@gmail.com>"]
+
+[dependencies]
+rustc-serialize = "*"
