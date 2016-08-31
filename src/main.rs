@@ -2,10 +2,43 @@ extern crate rustc_serialize;
 use std::io;
 use std::collections::BTreeMap;
 use std::thread;
+use rustc_serialize::json;
 use rustc_serialize::json::Json;
 
 fn main() {
     loop { receive(); }
+}
+
+fn receive() {
+    let mut data = String::new();
+    io::stdin().read_line(&mut data).expect("Failed to read event");
+
+    let root = Json::from_str(&data).expect("Failed to parse JSON");
+    let root = root.as_object().expect("root was not of type Json::Object");
+
+    let event = root.get("event")
+                .expect("No key `event` on message object")
+                .as_object().unwrap().clone();
+
+    let context = root.get("context").expect("No key `context` on message object");
+    let context: EventContext = json::decode(&context.to_string()).unwrap();
+
+    thread::spawn(move || {
+        let res = handle(event, &context);
+
+        let output = json::encode(&EventResponse {
+            invokeid: context.invokeid,
+            response: res
+        }).expect("Failed to encode response");
+
+        println!("{}", output);
+    });
+}
+
+#[allow(unused_variables)]
+fn handle(event: BTreeMap<String, Json>, context: &EventContext) -> Json {
+    let value = event.get("foo").unwrap().as_string().unwrap();
+    Json::String(value.to_string())
 }
 
 #[allow(non_snake_case,dead_code)]
@@ -21,28 +54,8 @@ struct EventContext {
     logStreamName: String
 }
 
-fn receive() {
-    let mut data = String::new();
-    io::stdin().read_line(&mut data).expect("Failed to read event");
-
-    let root = Json::from_str(&data).expect("Failed to parse JSON");
-    let obj = root.as_object().expect("root was not of type Json::Object");
-
-    let event = obj.get("event")
-                .expect("No key `event` on message object")
-                .as_object().unwrap().clone();
-    let context = obj.get("context")
-                .expect("No key `context` on message object")
-                .clone();
-
-    thread::spawn(move || {
-        let res = handle(event, context);
-        println!("{}", res); // TODO: This should also output the invokeid for out-of-order responses
-    });
-}
-
-#[allow(unused_variables)]
-fn handle(event: BTreeMap<String, Json>, context: Json) -> Json {
-    let value = event.get("foo").unwrap().as_string().unwrap();
-    Json::String(value.to_string())
+#[derive(RustcEncodable)]
+struct EventResponse {
+    invokeid: String,
+    response: Json
 }
