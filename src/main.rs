@@ -18,16 +18,20 @@ fn receive() {
 
     let event = root.get("event")
                 .expect("No key `event` on message object")
-                .as_object().unwrap().clone();
+                .as_object().expect("`event` key was not an object").clone();
 
-    let context = root.get("context").expect("No key `context` on message object");
-    let context: EventContext = json::decode(&context.to_string()).unwrap();
+    let context = root.get("context")
+                .expect("No key `context` on message object")
+                .as_object().expect("`context` key was not an object").clone();
 
     thread::spawn(move || {
-        let res = handle(event, &context);
+        let invokeid = context.get("invokeid").expect("no key `invokeid`")
+                .as_string().expect("`invokeid` wasn't a string").to_string();
+
+        let res = handle(event, context);
 
         let output = json::encode(&EventResponse {
-            invokeid: context.invokeid,
+            invokeid: invokeid.to_string(),
             response: res
         }).expect("Failed to encode response");
 
@@ -35,23 +39,9 @@ fn receive() {
     });
 }
 
-fn handle(event: BTreeMap<String, Json>, context: &EventContext) -> Json {
-    let foo = event.get("foo").unwrap().as_string().unwrap().to_string();
-    let value = foo + "-with-" + &context.memoryLimitInMB + "mb";
-    Json::String(value.to_string())
-}
-
-#[allow(non_snake_case,dead_code)]
-#[derive(RustcDecodable)]
-struct EventContext {
-    functionName: String,
-    invokeid: String,
-    awsRequestId: String,
-    invokedFunctionArn: String,
-    memoryLimitInMB: String,
-    functionVersion: String,
-    logGroupName: String,
-    logStreamName: String
+#[allow(unused_variables)]
+fn handle(event: BTreeMap<String, Json>, context: BTreeMap<String, Json>) -> Json {
+    event.get("foo").expect("no prop foo").clone()
 }
 
 #[derive(RustcEncodable)]
