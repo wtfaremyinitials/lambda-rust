@@ -35,9 +35,9 @@ fn receive() {
     });
 }
 
-#[allow(unused_variables)]
 fn handle(event: BTreeMap<String, Json>, context: &EventContext) -> Json {
-    let value = event.get("foo").unwrap().as_string().unwrap();
+    let foo = event.get("foo").unwrap().as_string().unwrap().to_string();
+    let value = foo + "-with-" + &context.memoryLimitInMB + "mb";
     Json::String(value.to_string())
 }
 
