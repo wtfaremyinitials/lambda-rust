@@ -5,7 +5,7 @@ use std::thread;
 use rustc_serialize::json::Json;
 
 fn main() {
-    loop { receive(); } 
+    loop { receive(); }
 }
 
 #[allow(non_snake_case,dead_code)]
@@ -18,7 +18,7 @@ struct EventContext {
     memoryLimitInMB: String,
     functionVersion: String,
     logGroupName: String,
-    logStreamName: String 
+    logStreamName: String
 }
 
 fn receive() {
@@ -38,11 +38,11 @@ fn receive() {
     thread::spawn(move || {
         let res = handle(event, context);
         println!("{}", res); // TODO: This should also output the invokeid for out-of-order responses
-    }); 
+    });
 }
 
 #[allow(unused_variables)]
 fn handle(event: BTreeMap<String, Json>, context: Json) -> Json {
-    let value = event.get("foo").unwrap().as_string().unwrap(); 
+    let value = event.get("foo").unwrap().as_string().unwrap();
     Json::String(value.to_string())
 }
