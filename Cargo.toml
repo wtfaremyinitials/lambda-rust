@@ -1,5 +1,5 @@
 [package]
-name = "rust-lambda"
+name = "aws_lambda"
 version = "0.1.0"
 authors = ["Will Franzen <wtfranzen@gmail.com>"]
 
