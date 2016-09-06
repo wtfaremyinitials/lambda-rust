@@ -1,0 +1,26 @@
+{
+  "name": "lambda-rust",
+  "version": "0.0.1",
+  "description": "Run Rust code in AWS Lambda",
+  "main": "index.handler.js",
+  "scripts": {
+    "test": "./test/test.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wtfaremyinitials/lambda-rust.git"
+  },
+  "keywords": [
+    "rust",
+    "lambda",
+    "aws",
+    "aws-lambda",
+    "rustlang"
+  ],
+  "author": "Will Franzen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wtfaremyinitials/lambda-rust/issues"
+  },
+  "homepage": "https://github.com/wtfaremyinitials/lambda-rust#readme"
+}
