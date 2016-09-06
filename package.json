@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/wtfaremyinitials/lambda-rust/issues"
   },
-  "homepage": "https://github.com/wtfaremyinitials/lambda-rust#readme"
+  "homepage": "https://github.com/wtfaremyinitials/lambda-rust#readme",
+  "devDependencies": {
+    "lambda-local": "0.0.10"
+  }
 }
